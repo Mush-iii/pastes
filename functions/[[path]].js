@@ -264,6 +264,7 @@ const CSS = `
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     flex: 1;
+    min-height: 0;
     overflow: auto;
   }
   .bar {
@@ -291,6 +292,7 @@ const CSS = `
   select:focus { border-color: var(--accent); }
   .meta { font-size: 11.5px; color: var(--muted-2); display: flex; gap: 10px; align-items: center; }
   .meta i { width: 3px; height: 3px; border-radius: 50%; background: var(--muted-2); display: inline-block; }
+  .wrap.fixed { height: calc(100vh - 56px); height: calc(100dvh - 56px); }
   .msg:not(.show) { display: none; }
   .msg { margin-bottom: 12px; font-size: 12.5px; color: var(--err); opacity: 0; transition: opacity .2s; }
   .msg.show { opacity: 1; }
@@ -321,15 +323,6 @@ const CSS = `
   .result a.btn { flex: none; color: var(--muted); font-weight: 500; }
   .result a.btn:hover { color: var(--text); }
   @keyframes rise { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-  .topbar.sticky {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    margin: 0 -24px;
-    padding: 14px 24px;
-    background: rgba(10, 10, 12, 0.88);
-    backdrop-filter: blur(8px);
-  }
   .center { text-align: center; margin: auto; }
   .center h1 { font-size: 3rem; margin: 0 0 6px; }
   .center p { color: var(--muted); font-size: 14px; margin: 0 0 22px; }
@@ -337,7 +330,6 @@ const CSS = `
     body { padding: 28px 14px; }
     .btn span { display: none; }
     .btn { padding: 0 11px; }
-    .topbar.sticky { margin: 0 -14px; padding: 12px 14px; }
   }
 `;
 
@@ -487,8 +479,8 @@ function renderView(slug, paste) {
 <style>${CSS}</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar sticky">
+  <div class="wrap fixed">
+    <div class="topbar">
       <div class="meta">
         <span>${lines.toLocaleString("en-US")} ${lines === 1 ? "line" : "lines"}</span><i></i>
         <span>${fmtSize(paste.size)}</span><i></i>
