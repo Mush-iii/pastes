@@ -8,7 +8,7 @@ const SLUG_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 const SLUG_LENGTH = 8;
 const SLUG_RE = /^[A-Za-z0-9]{8}$/;
 const MAX_BYTES = 1024 * 1024; // 1 MB
-const DEFAULT_TTL = "7d";
+const DEFAULT_TTL = "never";
 const TTLS = {
   "1h": 60 * 60 * 1000,
   "1d": 24 * 60 * 60 * 1000,
@@ -169,6 +169,7 @@ const CSS = `
     --accent-soft: rgba(110, 110, 255, 0.12);
     --err: #ff6363;
     --ok: #4ade80;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   body {
@@ -179,9 +180,9 @@ const CSS = `
     background: radial-gradient(circle at 20% -10%, rgba(110,110,255,0.08), transparent 40%), var(--bg);
     color: var(--text);
     font-family: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    padding: 48px 20px;
+    padding: 28px 24px;
   }
-  .wrap { width: 100%; max-width: 760px; }
+  .wrap { width: 100%; display: flex; flex-direction: column; min-height: calc(100vh - 56px); }
   .topbar {
     display: flex;
     align-items: center;
@@ -233,6 +234,10 @@ const CSS = `
     border: 1px solid var(--border);
     border-radius: 14px;
     overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
   }
   textarea, pre {
     margin: 0;
@@ -245,18 +250,21 @@ const CSS = `
   }
   textarea {
     display: block;
-    min-height: 340px;
+    flex: 1;
+    min-height: 240px;
     padding: 16px 18px;
     background: transparent;
     border: 0;
     outline: none;
-    resize: vertical;
+    resize: none;
   }
   textarea::placeholder { color: var(--muted-2); }
   pre {
     padding: 16px 18px;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+    flex: 1;
+    overflow: auto;
   }
   .bar {
     display: flex;
@@ -370,9 +378,9 @@ const HOME_HTML = `<!DOCTYPE html>
           <select id="ttl" title="Expiry">
             <option value="1h">1 hour</option>
             <option value="1d">1 day</option>
-            <option value="7d" selected>7 days</option>
+            <option value="7d">7 days</option>
             <option value="30d">30 days</option>
-            <option value="never">Never</option>
+            <option value="never" selected>Never</option>
           </select>
           <span id="count">0 chars</span>
         </div>
