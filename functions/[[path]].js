@@ -380,7 +380,6 @@ const HOME_HTML = `<!DOCTYPE html>
           <option value="30d">30 days</option>
           <option value="never" selected>Never</option>
         </select>
-        <span id="count">0 chars</span>
       </div>
       <button class="btn primary" id="create">Create</button>
     </div>
@@ -400,7 +399,7 @@ const HOME_HTML = `<!DOCTYPE html>
 <script>
   ${ICONS}
   const $ = (id) => document.getElementById(id);
-  const text = $('text'), btn = $('create'), ttl = $('ttl'), count = $('count');
+  const text = $('text'), btn = $('create'), ttl = $('ttl');
   const result = $('result'), link = $('link'), copyLink = $('copyLink'), openLink = $('openLink'), msgBox = $('msg');
   copyLink.innerHTML = icons.copy;
   openLink.innerHTML = icons.open;
@@ -410,10 +409,6 @@ const HOME_HTML = `<!DOCTYPE html>
     msgBox.classList.add('show');
     setTimeout(() => msgBox.classList.remove('show'), 3500);
   }
-
-  text.addEventListener('input', () => {
-    count.textContent = text.value.length.toLocaleString() + ' chars';
-  });
 
   text.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); create(); }
@@ -483,7 +478,6 @@ function renderView(slug, paste) {
     <div class="topbar">
       <div class="meta">
         <span>${lines.toLocaleString("en-US")} ${lines === 1 ? "line" : "lines"}</span><i></i>
-        <span>${fmtSize(paste.size)}</span><i></i>
         <span>${fmtExpiry(paste.expiresAt)}</span>
       </div>
       <div class="btns">
