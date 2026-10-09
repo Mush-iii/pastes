@@ -1,0 +1,7 @@
+name = "paste"
+pages_build_output_dir = "public"
+compatibility_date = "2026-09-02"
+
+[[r2_buckets]]
+binding = "PASTES"
+bucket_name = "pastes"
