@@ -275,13 +275,13 @@ const CSS = `
     border-top: 1px solid var(--border);
     background: var(--panel-2);
   }
-  .bar .left { display: flex; align-items: center; gap: 14px; font-size: 11.5px; color: var(--muted-2); }
+  .left { display: flex; align-items: center; gap: 14px; font-size: 11.5px; color: var(--muted-2); }
   select {
     background: var(--panel);
     border: 1px solid var(--border);
     color: var(--muted);
     border-radius: 8px;
-    height: 30px;
+    height: 34px;
     padding: 0 8px;
     font-family: inherit;
     font-size: 12px;
@@ -291,13 +291,14 @@ const CSS = `
   select:focus { border-color: var(--accent); }
   .meta { font-size: 11.5px; color: var(--muted-2); display: flex; gap: 10px; align-items: center; }
   .meta i { width: 3px; height: 3px; border-radius: 50%; background: var(--muted-2); display: inline-block; }
-  .msg { margin-top: 12px; font-size: 12.5px; color: var(--err); opacity: 0; transition: opacity .2s; }
+  .msg:not(.show) { display: none; }
+  .msg { margin-bottom: 12px; font-size: 12.5px; color: var(--err); opacity: 0; transition: opacity .2s; }
   .msg.show { opacity: 1; }
   .result {
     display: none;
     align-items: center;
     gap: 10px;
-    margin-top: 14px;
+    margin-bottom: 14px;
     background: var(--panel);
     border: 1px solid var(--accent);
     border-radius: 12px;
@@ -317,7 +318,18 @@ const CSS = `
     text-overflow: ellipsis;
   }
   .result a:hover { color: var(--accent); }
+  .result a.btn { flex: none; color: var(--muted); font-weight: 500; }
+  .result a.btn:hover { color: var(--text); }
   @keyframes rise { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .topbar.sticky {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin: 0 -24px;
+    padding: 14px 24px;
+    background: rgba(10, 10, 12, 0.88);
+    backdrop-filter: blur(8px);
+  }
   .center { text-align: center; margin: auto; }
   .center h1 { font-size: 3rem; margin: 0 0 6px; }
   .center p { color: var(--muted); font-size: 14px; margin: 0 0 22px; }
@@ -325,6 +337,7 @@ const CSS = `
     body { padding: 28px 14px; }
     .btn span { display: none; }
     .btn { padding: 0 11px; }
+    .topbar.sticky { margin: 0 -14px; padding: 12px 14px; }
   }
 `;
 
@@ -350,7 +363,6 @@ const ICONS = `
   }
 `;
 
-const LOCK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
 const COPY_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 const RAW_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h8"/></svg>';
 const PLUS_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
@@ -368,24 +380,17 @@ const HOME_HTML = `<!DOCTYPE html>
 <body>
   <div class="wrap">
     <div class="topbar">
-      <span class="badge">${LOCK_SVG} private paste</span>
-    </div>
-
-    <div class="panel">
-      <textarea id="text" placeholder="Paste or type here…" spellcheck="false" autofocus></textarea>
-      <div class="bar">
-        <div class="left">
-          <select id="ttl" title="Expiry">
-            <option value="1h">1 hour</option>
-            <option value="1d">1 day</option>
-            <option value="7d">7 days</option>
-            <option value="30d">30 days</option>
-            <option value="never" selected>Never</option>
-          </select>
-          <span id="count">0 chars</span>
-        </div>
-        <button class="btn primary" id="create">Create</button>
+      <div class="left">
+        <select id="ttl" title="Expiry">
+          <option value="1h">1 hour</option>
+          <option value="1d">1 day</option>
+          <option value="7d">7 days</option>
+          <option value="30d">30 days</option>
+          <option value="never" selected>Never</option>
+        </select>
+        <span id="count">0 chars</span>
       </div>
+      <button class="btn primary" id="create">Create</button>
     </div>
 
     <div class="result" id="result">
@@ -394,6 +399,10 @@ const HOME_HTML = `<!DOCTYPE html>
       <a class="btn" id="openLink" target="_blank" rel="noopener" title="Open"></a>
     </div>
     <div class="msg" id="msg"></div>
+
+    <div class="panel">
+      <textarea id="text" placeholder="Paste or type here…" spellcheck="false" autofocus></textarea>
+    </div>
   </div>
 
 <script>
@@ -479,7 +488,7 @@ function renderView(slug, paste) {
 </head>
 <body>
   <div class="wrap">
-    <div class="topbar">
+    <div class="topbar sticky">
       <div class="meta">
         <span>${lines.toLocaleString("en-US")} ${lines === 1 ? "line" : "lines"}</span><i></i>
         <span>${fmtSize(paste.size)}</span><i></i>
