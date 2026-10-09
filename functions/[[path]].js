@@ -158,15 +158,15 @@ function notFound() {
 
 const CSS = `
   :root {
-    --bg: #0a0a0c;
-    --panel: #131316;
-    --panel-2: #1a1a1f;
-    --border: #232329;
-    --text: #ececef;
-    --muted: #86868f;
-    --muted-2: #55555e;
-    --accent: #6e6eff;
-    --accent-soft: rgba(110, 110, 255, 0.12);
+    --bg: #1a1a1a;
+    --panel: #222222;
+    --panel-2: #2a2a2a;
+    --border: #333333;
+    --text: #e6e6e6;
+    --muted: #9a9a9a;
+    --muted-2: #707070;
+    --accent: #ff9800;
+    --accent-soft: rgba(255, 152, 0, 0.12);
     --err: #ff6363;
     --ok: #4ade80;
     color-scheme: dark;
@@ -177,9 +177,9 @@ const CSS = `
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    background: radial-gradient(circle at 20% -10%, rgba(110,110,255,0.08), transparent 40%), var(--bg);
+    background: var(--bg);
     color: var(--text);
-    font-family: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     padding: 28px 24px;
   }
   .wrap { width: 100%; display: flex; flex-direction: column; min-height: calc(100vh - 56px); }
@@ -226,7 +226,7 @@ const CSS = `
   .btn svg { width: 14px; height: 14px; }
   .btn:hover { border-color: var(--accent); color: var(--text); }
   .btn:active { transform: scale(0.97); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #1a1a1a; font-weight: 700; }
   .btn.primary:hover { filter: brightness(1.1); }
   .btn:disabled { opacity: .5; cursor: default; }
   .panel {
